@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel Splitter</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+        * {
+            margin: 0px;
+            padding: 0px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container-split-mode {
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: row;
+            justify-content: start;
+            background-color: #292929;
+            color: white;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        #split-mode, #split-mode-2 {
+            width: 50%;
+            padding: 0 10px;
+        }
+
+        h1 {
+            color: #5a5a5a;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .custom-file-upload {
+            display: flex;
+            align-items: center;
+            font-family: inherit;
+            font-weight: 500;
+            font-size: 17px;
+            padding: 12px 20px;
+            color: white;
+            background: rgb(4, 84, 88);
+            border: none;
+            box-shadow: 0 0.7em 1.5em -0.5em rgba(59, 48, 78, 0.527);
+            letter-spacing: 0.05em;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            margin: 10px 0;
+        }
+
+        #customIntervalsContainer {
+            padding: 10px 0;
+        }
+
+        .custom-file-upload:hover {
+            box-shadow: 0 0.5em 1.5em -0.5em rgba(88, 71, 116, 0.627);
+            transform: translateY(-2px);
+        }
+
+        .custom-file-upload:active {
+            box-shadow: 0 0.3em 1em -0.5em rgba(88, 71, 116, 0.627);
+            transform: translateY(0);
+        }
+
+        .custom-file-upload svg {
+            margin-right: 8px;
+            width: 25px;
+        }
+
+        input[type="number"] {
+            width: 80px;
+            height: 35px;
+            padding: 5px 10px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        input[type="number"], 
+        input[type="checkbox"],
+        button,
+        .custom-interval {
+            margin: 5px 0;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-family: inherit;
+        }
+
+        .custom-interval {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: rgb(0, 51, 54);
+        }
+
+        label {
+            margin-right: 10px;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+
+        #progress {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            text-align: center;
+            font-size: 16px;
+            color: #007bff;
+        }
+
+        #feedback {
+            width: 100%;
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #nomeArquivo {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            text-align: center;
+        }
+
+        hr {
+            width: 100%;
+            margin: 20px 0;
+            border: 0;
+            height: 1px;
+            background-color: #ddd;
+        }
+
+        .Download-button {
+            width: 240px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: inherit;
+            font-weight: 500;
+            font-size: 16px;
+            padding: 12px 20px;
+            color: white;
+            background: rgb(0, 99, 104);
+            border: none;
+            box-shadow: 0 0.7em 1.5em -0.5em rgba(59, 48, 78, 0.527);
+            letter-spacing: 0.05em;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+        }
+
+        .Download-button:hover {
+            box-shadow: 0 0.5em 1.5em -0.5em rgba(88, 71, 116, 0.627);
+            transform: translateY(-2px);
+        }
+
+        .Download-button:active {
+            box-shadow: 0 0.3em 1em -0.5em rgba(88, 71, 116, 0.627);
+            transform: translateY(0);
+        }
+
+        .Download-button svg {
+            margin-right: 8px;
+            width: 25px;
+        }
+
+        .config {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+            }
+            
+            .container-split-mode {
+                flex-direction: column;
+            }
+            
+            #split-mode, #split-mode-2 {
+                width: 100%;
+                padding: 10px 0;
+            }
+            
+            input[type="number"] {
+                width: 100%;
+            }
+            
+            .Download-button {
+                width: 100%;
+            }
+        }
+
+        /* Barra de progresso */
+        #progress-bar-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        #progress-bar {
+            height: 20px;
+            background-color: #4CAF50;
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="container">
+        <h1>Excel Splitter</h1>
+        <hr>
+
+        <label for="excelFileInput" class="custom-file-upload">
+            <svg aria-hidden="true" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-width="2" stroke="#fffffff"
+                    d="M13.5 3H12H8C6.34315 3 5 4.34315 5 6V18C5 19.6569 6.34315 21 8 21H11M13.5 3L19 8.625M13.5 3V7.625C13.5 8.17728 13.9477 8.625 14.5 8.625H19M19 8.625V11.8125"
+                    stroke-linejoin="round" stroke-linecap="round"></path>
+                <path stroke-linejoin="round" stroke-linecap="round" stroke-width="2" stroke="#fffffff"
+                    d="M17 15V18M17 21V18M17 18H14M17 18H20"></path>
+            </svg>
+            Selecionar Arquivo Excel
+        </label>
+
+        <input type="file" id="excelFileInput" accept=".xlsx, .xls" style="display: none;">
+        <p id="nomeArquivo">Nenhum arquivo selecionado</p>
+
+        <div id="feedback">
+            <!-- Div para feedback ao usuário -->
+        </div>
+
+        <div class="config">
+            <section class="container-split-mode">
+                <div id="split-mode">
+                    <label for="intervalsInput">Número de intervalos:</label>
+                    <input type="number" id="intervalsInput" min="1"><br><br>
+
+                    <label>
+                        <input type="checkbox" id="customIntervalsCheckbox"> Intervalos personalizados
+                    </label>
+
+                    <div id="customIntervalsContainer"></div>
+                </div>
+                <div id="split-mode-2">
+                    <label for="linesInput">Linhas por arquivo:</label>
+                    <input type="number" id="linesInput" min="1"><br><br>
+                </div>
+            </section>
+        </div>
+
+        <div id="progress-bar-container">
+            <div id="progress-bar"></div>
+        </div>
+        
+        <div id="progress"></div>
+
+        <button class="Download-button" id="splitButton">
+            <svg xmlns="http://www.w3.org/2000/svg" height="16" width="20" viewBox="0 0 640 512">
+                <path
+                    d="M144 480C64.5 480 0 415.5 0 336c0-62.8 40.2-116.2 96.2-135.9c-.1-2.7-.2-5.4-.2-8.1c0-88.4 71.6-160 160-160c59.3 0 111 32.2 138.7 80.2C409.9 102 428.3 96 448 96c53 0 96 43 96 96c0 12.2-2.3 23.8-6.4 34.6C596 238.4 640 290.1 640 352c0 70.7-57.3 128-128 128H144zm79-167l80 80c9.4 9.4 24.6 9.4 33.9 0l80-80c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-39 39V184c0-13.3-10.7-24-24-24s-24 10.7-24 24V318.1l-39-39c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9z"
+                    fill="white"></path>
+            </svg>
+            <span>Dividir Arquivo</span>
+        </button>
+    </section>
+
+    <script>
+        // Variáveis globais
+        let workbook = null;
+        let nomeArquivoBase = '';
+        
+        // Elementos da UI
+        const botaoUploadArquivo = document.querySelector('.custom-file-upload');
+        const inputArquivoExcel = document.getElementById('excelFileInput');
+        const nomeDoArquivoLabel = document.getElementById('nomeArquivo');
+        const feedbackDiv = document.getElementById('feedback');
+        const progressDiv = document.getElementById('progress');
+        const progressBarContainer = document.getElementById('progress-bar-container');
+        const progressBar = document.getElementById('progress-bar');
+        
+        // Configuração de eventos
+        botaoUploadArquivo.addEventListener('click', () => {
+            inputArquivoExcel.click();
+        });
+        
+        inputArquivoExcel.addEventListener('change', (event) => {
+            if (event.target.files.length > 0) {
+                const file = event.target.files[0];
+                nomeDoArquivoLabel.textContent = file.name;
+                nomeArquivoBase = file.name.replace(/\.[^/.]+$/, "");
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        workbook = XLSX.read(data, { type: 'array' });
+                        
+                        // Mostra informações sobre o arquivo
+                        const firstSheetName = workbook.SheetNames[0];
+                        const worksheet = workbook.Sheets[firstSheetName];
+                        const rowCount = XLSX.utils.sheet_to_json(worksheet).length;
+                        
+                        feedbackDiv.innerHTML = `
+                            <strong>Arquivo carregado:</strong> ${file.name}<br>
+                            <strong>Planilhas:</strong> ${workbook.SheetNames.join(', ')}<br>
+                            <strong>Linhas na primeira planilha:</strong> ${rowCount}
+                        `;
+                    } catch (error) {
+                        feedbackDiv.innerHTML = `<strong>Erro:</strong> Não foi possível ler o arquivo Excel.`;
+                        console.error(error);
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        });
+        
+        // Evento para checkbox de intervalos personalizados
+        document.getElementById('customIntervalsCheckbox').addEventListener('change', function() {
+            const container = document.getElementById('customIntervalsContainer');
+            container.innerHTML = '';
+            
+            if (this.checked) {
+                const numeroIntervalos = parseInt(document.getElementById('intervalsInput').value);
+                if (!isNaN(numeroIntervalos)) {
+                    const totalLinhas = workbook ? XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]).length : 0;
+                    const linhasPorIntervalo = Math.ceil(totalLinhas / numeroIntervalos);
+                    
+                    for (let i = 0; i < numeroIntervalos; i++) {
+                        const div = document.createElement('div');
+                        div.style.marginBottom = '5px';
+                        
+                        const label = document.createElement('label');
+                        label.textContent = `Intervalo ${i+1}: `;
+                        
+                        const input = document.createElement('input');
+                        input.type = 'number';
+                        input.min = '1';
+                        input.placeholder = linhasPorIntervalo;
+                        input.classList.add('custom-interval');
+                        input.style.width = '80px';
+                        
+                        div.appendChild(label);
+                        div.appendChild(input);
+                        container.appendChild(div);
+                    }
+                }
+            }
+        });
+        
+        // Evento para o botão de dividir
+        document.getElementById('splitButton').addEventListener('click', function() {
+            if (!workbook) {
+                alert("Por favor, selecione um arquivo Excel primeiro.");
+                return;
+            }
+            
+            const numeroIntervalos = parseInt(document.getElementById('intervalsInput').value);
+            const maximoLinhas = parseInt(document.getElementById('linesInput').value);
+            const intervaloPersonalizadoAtivado = document.getElementById('customIntervalsCheckbox').checked;
+            
+            // Validação: Verifica se ambos os campos estão preenchidos
+            const ambosPreenchidos = !isNaN(numeroIntervalos) && !isNaN(maximoLinhas);
+            const nenhumPreenchido = isNaN(numeroIntervalos) && isNaN(maximoLinhas);
+            
+            if (ambosPreenchidos) {
+                alert("Por favor, preencha apenas UM dos campos: 'Número de intervalos' OU 'Linhas por arquivo', não ambos.");
+                return;
+            }
+            
+            if (nenhumPreenchido) {
+                alert("Por favor, preencha um dos campos: 'Número de intervalos' OU 'Linhas por arquivo'.");
+                return;
+            }
+            
+            // Obter a planilha ativa (primeira planilha por padrão)
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet);
+            const totalLinhas = jsonData.length;
+            
+            // Resetar UI de progresso
+            progressDiv.innerHTML = 'Preparando para dividir o arquivo...';
+            progressBarContainer.style.display = 'block';
+            progressBar.style.width = '0%';
+            
+            if (intervaloPersonalizadoAtivado) {
+                const entradasIntervalo = document.querySelectorAll('.custom-interval');
+                const tamanhosPersonalizados = Array.from(entradasIntervalo).map(input => parseInt(input.value));
+                
+                if (tamanhosPersonalizados.some(isNaN) || tamanhosPersonalizados.some(tamanho => tamanho <= 0)) {
+                    alert("Por favor, insira valores válidos para os intervalos personalizados.");
+                    return;
+                }
+                
+                dividirExcelComTamanhosPersonalizados(jsonData, tamanhosPersonalizados, sheetName);
+            } 
+            else if (!isNaN(maximoLinhas)) {
+                dividirExcelPorLinhas(jsonData, maximoLinhas, sheetName);
+            }
+            else if (!isNaN(numeroIntervalos)) {
+                const linhasPorIntervalo = Math.ceil(totalLinhas / numeroIntervalos);
+                dividirExcelPorLinhas(jsonData, linhasPorIntervalo, sheetName);
+            }
+        });
+        
+        // Função para dividir com intervalos personalizados
+        function dividirExcelComTamanhosPersonalizados(data, tamanhos, originalSheetName) {
+            let arquivoAtual = 0;
+            let linhaAtual = 0;
+            const totalArquivos = tamanhos.length;
+            const totalLinhas = data.length;
+            
+            function processarProximoArquivo() {
+                if (arquivoAtual < totalArquivos) {
+                    const linhasIntervalo = tamanhos[arquivoAtual];
+                    const dadosParte = data.slice(linhaAtual, linhaAtual + linhasIntervalo);
+                    
+                    // Atualizar barra de progresso
+                    const progresso = Math.round((linhaAtual / totalLinhas) * 100);
+                    progressBar.style.width = `${progresso}%`;
+                    progressDiv.innerHTML = `Processando arquivo ${arquivoAtual + 1} de ${totalArquivos}...`;
+                    
+                    // Criar novo workbook
+                    const newWorkbook = XLSX.utils.book_new();
+                    const newWorksheet = XLSX.utils.json_to_sheet(dadosParte);
+                    XLSX.utils.book_append_sheet(newWorkbook, newWorksheet, originalSheetName);
+                    
+                    // Gerar nome do arquivo
+                    const nomeArquivo = `${nomeArquivoBase}_parte${arquivoAtual + 1}.xlsx`;
+                    
+                    // Adicionar pequeno atraso para UI não travar
+                    setTimeout(() => {
+                        try {
+                            XLSX.writeFile(newWorkbook, nomeArquivo);
+                            linhaAtual += linhasIntervalo;
+                            arquivoAtual++;
+                            processarProximoArquivo();
+                        } catch (error) {
+                            progressDiv.innerHTML = `Erro ao gerar arquivo: ${error.message}`;
+                            console.error(error);
+                        }
+                    }, 300);
+                } 
+                else if (linhaAtual < data.length) {
+                    // Processar linhas restantes
+                    const dadosParte = data.slice(linhaAtual);
+                    const newWorkbook = XLSX.utils.book_new();
+                    const newWorksheet = XLSX.utils.json_to_sheet(dadosParte);
+                    XLSX.utils.book_append_sheet(newWorkbook, newWorksheet, originalSheetName);
+                    
+                    progressBar.style.width = '100%';
+                    
+                    try {
+                        XLSX.writeFile(newWorkbook, `${nomeArquivoBase}_parte${arquivoAtual + 1}.xlsx`);
+                        progressDiv.innerHTML = `Processo concluído! ${totalArquivos + 1} arquivos gerados.`;
+                    } catch (error) {
+                        progressDiv.innerHTML = `Erro ao gerar arquivo final: ${error.message}`;
+                        console.error(error);
+                    }
+                }
+                else {
+                    progressBar.style.width = '100%';
+                    progressDiv.innerHTML = `Processo concluído! ${totalArquivos} arquivos gerados.`;
+                }
+            }
+            
+            processarProximoArquivo();
+        }
+        
+        // Função para dividir por número de linhas
+        function dividirExcelPorLinhas(data, linhasPorArquivo, originalSheetName) {
+            const totalArquivos = Math.ceil(data.length / linhasPorArquivo);
+            let arquivoAtual = 0;
+            const totalLinhas = data.length;
+            
+            function processarProximoArquivo() {
+                if (arquivoAtual < totalArquivos) {
+                    const inicio = arquivoAtual * linhasPorArquivo;
+                    const fim = inicio + linhasPorArquivo;
+                    const dadosParte = data.slice(inicio, fim);
+                    
+                    // Atualizar barra de progresso
+                    const progresso = Math.round((inicio / totalLinhas) * 100);
+                    progressBar.style.width = `${progresso}%`;
+                    progressDiv.innerHTML = `Processando arquivo ${arquivoAtual + 1} de ${totalArquivos}...`;
+                    
+                    // Criar novo workbook
+                    const newWorkbook = XLSX.utils.book_new();
+                    const newWorksheet = XLSX.utils.json_to_sheet(dadosParte);
+                    XLSX.utils.book_append_sheet(newWorkbook, newWorksheet, originalSheetName);
+                    
+                    // Gerar nome do arquivo
+                    const nomeArquivo = `${nomeArquivoBase}_parte${arquivoAtual + 1}.xlsx`;
+                    
+                    // Adicionar pequeno atraso para UI não travar
+                    setTimeout(() => {
+                        try {
+                            XLSX.writeFile(newWorkbook, nomeArquivo);
+                            arquivoAtual++;
+                            processarProximoArquivo();
+                        } catch (error) {
+                            progressDiv.innerHTML = `Erro ao gerar arquivo: ${error.message}`;
+                            console.error(error);
+                        }
+                    }, 300);
+                } 
+                else {
+                    progressBar.style.width = '100%';
+                    progressDiv.innerHTML = `Processo concluído! ${totalArquivos} arquivos gerados.`;
+                }
+            }
+            
+            processarProximoArquivo();
+        }
+    </script>
+</body>
+</html>
