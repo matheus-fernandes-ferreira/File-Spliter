@@ -5,20 +5,116 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSV Splitter</title>
+    <!-- <link rel="stylesheet" href="./style.css">
+    <script defer src="./script.js"></script> -->
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
-            margin: 0;
-            padding: 20px;
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        .container {
+            width: 80%;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+        }
+
+        body {
+            font-family: open sans;
+            background-color: #f4f4f9;
+            color: #333;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container-split-mode {
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: row;
+            justify-content: start;
+            padding-top: 10;
+            padding-bottom: 10;
+            background-color: #292929;
+            color: white;
+        }
+
+
+        #split-mode {
+            width: 50%;
+
+        }
+
+        #split-mode-2 {
+            width: 50%;
+            height: 100%;
+
         }
 
         h1 {
             color: #5a5a5a;
+        }
+
+
+
+        .custom-file-upload {
+            display: flex;
+            align-items: center;
+            font-family: inherit;
+            font-weight: 500;
+            font-size: 17px;
+            padding: 12px 20px;
+            color: white;
+            background: rgb(4, 84, 88);
+            border: none;
+            box-shadow: 0 0.7em 1.5em -0.5em rgba(59, 48, 78, 0.527);
+            letter-spacing: 0.05em;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+        }
+        #customIntervalsContainer{
+            padding: 20px;
+        }
+
+
+        .custom-file-upload:hover {
+            box-shadow: 0 0.5em 1.5em -0.5em rgba(88, 71, 116, 0.627);
+        }
+
+        .custom-file-upload:active {
+            box-shadow: 0 0.3em 1em -0.5em rgba(88, 71, 116, 0.627);
+        }
+
+
+        .custom-file-upload:hover::before,
+        .custom-file-upload:hover:after {
+            height: 60%;
+        }
+
+        .custom-file-upload svg {
+            margin-right: 8px;
+            width: 25px;
+        }
+
+        #linesInput,
+        #intervalsInput {
+            width: 50px;
+            height: 5px;
+        }
+
+
+        button svg {
+            width: 1.25rem;
+            height: 1.25rem;
         }
 
         input[type="file"],
@@ -44,30 +140,35 @@
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: rgb(0, 51, 54);
         }
 
         label {
             margin-right: 10px;
-            font-weight: bold;
+
         }
 
-        #feedback,
+
         #progress {
             margin-top: 20px;
+            margin-bottom: 20px;
             padding: 10px;
             background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 4px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
             width: 100%;
             text-align: center;
         }
 
         #feedback {
+            width: 100%;
+            display: flex;
+            justify-content: start;
+            align-items: start;
             font-size: 16px;
             color: #333;
+            margin-top: 30px;
         }
 
         #progress {
@@ -75,133 +176,302 @@
             color: #007bff;
         }
 
+        hr {
+            width: 100%;
+            margin: 30px;
+        }
+
+
+        .Download-button {
+            width: 240px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: inherit;
+            font-weight: 500;
+            font-size: 16px;
+            padding: 12px 20px;
+            color: white;
+            background: rgb(0, 99, 104);
+            border: none;
+            box-shadow: 0 0.7em 1.5em -0.5em rgba(59, 48, 78, 0.527);
+            letter-spacing: 0.05em;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+        }
+
+
+        .Download-button svg {
+            margin-right: 8px;
+            width: 25px;
+        }
+
+        .Download-button:hover {
+            box-shadow: 0 0.5em 1.5em -0.5em rgba(88, 71, 116, 0.627);
+        }
+
+        .Download-button:active {
+            box-shadow: 0 0.3em 1em -0.5em rgba(88, 71, 116, 0.627);
+        }
+
+        .Download-button::before {
+            content: "";
+            width: 4px;
+            height: 40%;
+            background-color: white;
+            position: absolute;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+            left: 0;
+            transition: all 0.2s;
+        }
+
+        .Download-button::after {
+            content: "";
+            width: 4px;
+            height: 40%;
+            background-color: white;
+            position: absolute;
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+            right: 0;
+            transition: all 0.2s;
+        }
+
+        .Download-button:hover::before,
+        .Download-button:hover::after {
+            height: 60%;
+        }
+
+        .Download-button svg {
+            margin-right: 8px;
+            width: 25px;
+        }
+
+        .config {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        #nomeArquivo {
+            margin: 10px;
+        }
+
         @media (max-width: 600px) {
             input[type="number"] {
                 width: 100%;
             }
         }
+
     </style>
+
+
 </head>
 
 <body>
-    <h1>CSV Splitter</h1>
-    <input type="file" id="csvFileInput" accept=".csv"><br><br>
+    <section class="container">
+        <h1>CSV Splitter</h1>
+        <hr>
 
-    <label for="intervalsInput">Número de intervalos:</label>
-    <input type="number" id="intervalsInput" min="1"><br><br>
 
-    <label for="linesInput">Quantidade máxima de linhas por arquivo:</label>
-    <input type="number" id="linesInput" min="1"><br><br>
+        <label for="fcsvFileInput" class="custom-file-upload">
+            <svg aria-hidden="true" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-width="2" stroke="#fffffff"
+                    d="M13.5 3H12H8C6.34315 3 5 4.34315 5 6V18C5 19.6569 6.34315 21 8 21H11M13.5 3L19 8.625M13.5 3V7.625C13.5 8.17728 13.9477 8.625 14.5 8.625H19M19 8.625V11.8125"
+                    stroke-linejoin="round" stroke-linecap="round"></path>
+                <path stroke-linejoin="round" stroke-linecap="round" stroke-width="2" stroke="#fffffff"
+                    d="M17 15V18M17 21V18M17 18H14M17 18H20"></path>
+            </svg>
 
-    <label>
-        <input type="checkbox" id="customIntervalsCheckbox"> Intervalos personalizados
-    </label><br><br>
+            Selecionar Arquivo
+        </label>
 
-    <div id="customIntervalsContainer"></div><br>
+        <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+        <p id="nomeArquivo"> Nenhum arquivo selecionado</p>
 
-    <button id="splitButton">Dividir CSV</button><br><br>
 
-    <div id="feedback"></div> <!-- Div para feedback ao usuário -->
-    <div id="progress"></div> <!-- Div para exibir o progresso -->
+        <div id="feedback">
+
+            <!-- Div para feedback ao usuário -->
+
+        </div>
+
+
+        <!-- -------------------------- -->
+        </span>
+        <div class="config">
+            <section class="container-split-mode">
+                <div id="split-mode">
+                    <label for="intervalsInput">Número de intervalos:</label>
+                    <input type="number" id="intervalsInput" min="1"><br><br>
+
+                    <input type="checkbox" id="customIntervalsCheckbox"> Intervalos personalizados
+                    </label>
+
+                    <div id="customIntervalsContainer"></div><br>
+
+                </div>
+                <div id="split-mode-2">
+                    <label for="linesInput">Linhas:</label>
+                    <input type="number" id="linesInput" min="1"><br><br>
+
+            </section>
+
+
+            <!-- <button id="splitButton">Dividir CSV</button><br><br> -->
+
+
+
+        </div>
+
+        <div id="progress"></div> <!-- Div para exibir o progresso -->
+
+        <button class="Download-button" id="splitButton">
+            <svg xmlns="http://www.w3.org/2000/svg" height="16" width="20" viewBox="0 0 640 512">
+                <path
+                    d="M144 480C64.5 480 0 415.5 0 336c0-62.8 40.2-116.2 96.2-135.9c-.1-2.7-.2-5.4-.2-8.1c0-88.4 71.6-160 160-160c59.3 0 111 32.2 138.7 80.2C409.9 102 428.3 96 448 96c53 0 96 43 96 96c0 12.2-2.3 23.8-6.4 34.6C596 238.4 640 290.1 640 352c0 70.7-57.3 128-128 128H144zm79-167l80 80c9.4 9.4 24.6 9.4 33.9 0l80-80c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-39 39V184c0-13.3-10.7-24-24-24s-24 10.7-24 24V318.1l-39-39c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9z"
+                    fill="white"></path>
+            </svg>
+            <span> Dividir CSV </span>
+        </button>
+
+    </section>
+
 
     <script>
-        let csvContent = '';
-        let fileName = '';
 
-        document.getElementById('csvFileInput').addEventListener('change', function (event) {
-            const file = event.target.files[0];
-            fileName = file.name.replace(".csv", "");
-            const reader = new FileReader();
+        // Seleciona o botão de upload de arquivo personalizado e os elementos relacionados
+        const botaoUploadArquivo = document.querySelector('.custom-file-upload');
+        const inputArquivoCSV = document.getElementById('csvFileInput');
+        const nomeDoArquivoLabel = document.getElementById('nomeArquivo');
 
-            reader.onload = function (e) {
-                csvContent = e.target.result;
-                const totalLines = csvContent.split("\n").filter(line => line.trim() !== "").length - 1; // Exclui o cabeçalho
-                document.getElementById('feedback').innerHTML = `Total de linhas no arquivo: ${totalLines}`;
-            };
-
-            reader.readAsText(file);
+        // Quando o botão é clicado, ativa o input de arquivo CSV
+        botaoUploadArquivo.addEventListener('click', () => {
+            inputArquivoCSV.click();
         });
 
-        document.getElementById('customIntervalsCheckbox').addEventListener('change', function () {
-            const customIntervalsContainer = document.getElementById('customIntervalsContainer');
-            customIntervalsContainer.innerHTML = ''; // Limpa o conteúdo
+        // Quando o arquivo CSV é selecionado, exibe o nome do arquivo na tela
+        inputArquivoCSV.addEventListener('change', () => {
+            const nomeArquivoSelecionado = inputArquivoCSV.files[0].name;
+            nomeDoArquivoLabel.textContent = nomeArquivoSelecionado;
+        });
 
+        //--------------------------------------------------------
+        let conteudoCSV = '';  // Armazena o conteúdo do arquivo CSV
+        let nomeArquivoBase = '';  // Armazena o nome base do arquivo (sem extensão)
+
+        // Lê o arquivo CSV quando é selecionado e processa seu conteúdo
+        document.getElementById('csvFileInput').addEventListener('change', function (evento) {
+            const arquivo = evento.target.files[0];
+            nomeArquivoBase = arquivo.name.replace(".csv", "");  // Remove a extensão .csv do nome do arquivo
+            const leitor = new FileReader();
+
+            // Quando a leitura do arquivo é concluída, conta o número de linhas e exibe o total
+            leitor.onload = function (e) {
+                conteudoCSV = e.target.result;
+                const totalLinhas = conteudoCSV.split("\n").filter(linha => linha.trim() !== "").length - 1; // Exclui o cabeçalho
+                document.getElementById('feedback').innerHTML = `Total de linhas no arquivo: ${totalLinhas}`;
+            };
+
+            leitor.readAsText(arquivo);  // Inicia a leitura do arquivo
+        });
+
+        // Ativa ou desativa os campos de entrada de intervalos personalizados
+        document.getElementById('customIntervalsCheckbox').addEventListener('change', function () {
+            const containerIntervalosPersonalizados = document.getElementById('customIntervalsContainer');
+            containerIntervalosPersonalizados.innerHTML = '';  // Limpa os campos de intervalos personalizados
+
+            // Se o checkbox for ativado, cria inputs para definir os intervalos personalizados
             if (this.checked) {
-                const intervals = parseInt(document.getElementById('intervalsInput').value);
-                if (!isNaN(intervals) && intervals > 0) {
-                    for (let i = 0; i < intervals; i++) {
-                        const input = document.createElement('input');
-                        input.type = 'number';
-                        input.min = '1';
-                        input.placeholder = `Linhas para intervalo ${i + 1}`;
-                        input.classList.add('custom-interval');
-                        customIntervalsContainer.appendChild(input);
-                        customIntervalsContainer.appendChild(document.createElement('br'));
+                const numeroIntervalos = parseInt(document.getElementById('intervalsInput').value);
+                if (!isNaN(numeroIntervalos) && numeroIntervalos > 0) {
+                    for (let i = 0; i < numeroIntervalos; i++) {
+                        const inputIntervalo = document.createElement('input');
+                        inputIntervalo.type = 'number';
+                        inputIntervalo.min = '1';
+                        inputIntervalo.placeholder = `Linhas para intervalo ${i + 1}`;
+                        inputIntervalo.classList.add('custom-interval');
+                        containerIntervalosPersonalizados.appendChild(inputIntervalo);
+                        containerIntervalosPersonalizados.appendChild(document.createElement('br'));
                     }
                 } else {
-                    alert("Insira um número válido de intervalos.");
-                    this.checked = false;
+                    alert("Insira um número válido de intervalos.");  // Mostra erro se o número de intervalos for inválido
+                    this.checked = false;  // Desmarca o checkbox em caso de erro
                 }
             }
         });
 
+        // Ao clicar no botão "Dividir", decide se usará intervalos personalizados ou não
         document.getElementById('splitButton').addEventListener('click', function () {
-            const intervals = parseInt(document.getElementById('intervalsInput').value);
-            const maxLines = parseInt(document.getElementById('linesInput').value);
-            const customIntervalsChecked = document.getElementById('customIntervalsCheckbox').checked;
+            const numeroIntervalos = parseInt(document.getElementById('intervalsInput').value);
+            const maximoLinhas = parseInt(document.getElementById('linesInput').value);
+            const intervaloPersonalizadoAtivado = document.getElementById('customIntervalsCheckbox').checked;
 
-            if (customIntervalsChecked) {
-                const customIntervalInputs = document.querySelectorAll('.custom-interval');
-                const customSizes = Array.from(customIntervalInputs).map(input => parseInt(input.value));
+            // Se intervalos personalizados forem ativados, valida e processa os tamanhos
+            if (intervaloPersonalizadoAtivado) {
+                const entradasIntervaloPersonalizado = document.querySelectorAll('.custom-interval');
+                const tamanhosPersonalizados = Array.from(entradasIntervaloPersonalizado).map(input => parseInt(input.value));
 
-                if (customSizes.some(isNaN) || customSizes.some(size => size <= 0)) {
+                // Verifica se os valores personalizados são válidos
+                if (tamanhosPersonalizados.some(isNaN) || tamanhosPersonalizados.some(tamanho => tamanho <= 0)) {
                     alert("Por favor, insira valores válidos para os intervalos personalizados.");
                     return;
                 }
 
-                const totalCustomLines = customSizes.reduce((a, b) => a + b, 0);
-                const totalLines = csvContent.split("\n").filter(line => line.trim() !== "").length - 1; // Exclui o cabeçalho
+                const totalLinhasPersonalizadas = tamanhosPersonalizados.reduce((a, b) => a + b, 0);  // Soma os intervalos personalizados
+                const totalLinhas = conteudoCSV.split("\n").filter(linha => linha.trim() !== "").length - 1;  // Conta o número total de linhas
 
-                if (totalCustomLines < totalLines) {
+                // Se a soma dos intervalos for menor que o número total de linhas, avisa o usuário
+                if (totalLinhasPersonalizadas < totalLinhas) {
                     if (!confirm("A soma dos intervalos é menor que o total de linhas. As linhas restantes serão colocadas em um arquivo adicional. Deseja continuar?")) {
                         return;
                     }
                 }
 
-                splitCSVWithCustomSizes(csvContent, customSizes);
-            } else if (isNaN(intervals) && isNaN(maxLines)) {
+                dividirCSVComTamanhosPersonalizados(conteudoCSV, tamanhosPersonalizados);
+            }
+            // Caso contrário, verifica se o número de intervalos ou o número máximo de linhas é válido
+            else if (isNaN(numeroIntervalos) && isNaN(maximoLinhas)) {
                 alert("Por favor, insira um número válido de intervalos ou quantidade máxima de linhas.");
                 return;
             } else {
-                splitCSV(csvContent, intervals, maxLines);
+                dividirCSV(conteudoCSV, numeroIntervalos, maximoLinhas);
             }
         });
 
-        function splitCSVWithCustomSizes(csvContent, customSizes) {
-            const lines = csvContent.split("\n").filter(line => line.trim() !== "");
-            const header = lines[0]; // Primeira linha do CSV
-            const dataLines = lines.slice(1); // Todas as outras linhas
+        // Função para dividir o CSV com base em intervalos personalizados
+        function dividirCSVComTamanhosPersonalizados(conteudoCSV, tamanhosPersonalizados) {
+            const linhas = conteudoCSV.split("\n").filter(linha => linha.trim() !== "");
+            const cabecalho = linhas[0];  // Primeira linha do CSV (cabeçalho)
+            const dadosLinhas = linhas.slice(1);  // Todas as outras linhas (dados)
 
-            let currentFile = 0;
-            let currentLine = 0;
+            let arquivoAtual = 0;
+            let linhaAtual = 0;
 
-            function generateAndDownloadFile() {
-                if (currentFile < customSizes.length) {
-                    const linesForThisInterval = customSizes[currentFile];
-                    const csvChunk = [header].concat(dataLines.slice(currentLine, currentLine + linesForThisInterval)).join("\n");
+            // Função recursiva que gera e faz o download de arquivos
+            function gerarEDownloadArquivo() {
+                if (arquivoAtual < tamanhosPersonalizados.length) {
+                    const linhasIntervalo = tamanhosPersonalizados[arquivoAtual];
+                    const parteCSV = [cabecalho].concat(dadosLinhas.slice(linhaAtual, linhaAtual + linhasIntervalo)).join("\n");
 
-                    downloadCSV(csvChunk, `${fileName}_part${currentFile + 1}.csv`);
-                    document.getElementById('progress').innerHTML = `Baixando arquivo ${currentFile + 1} de ${customSizes.length}`;
+                    baixarCSV(parteCSV, `${nomeArquivoBase}_parte${arquivoAtual + 1}.csv`);
+                    document.getElementById('progress').innerHTML = `Baixando arquivo ${arquivoAtual + 1} de ${tamanhosPersonalizados.length}`;
 
-                    setTimeout(generateAndDownloadFile, 5000); // Intervalo de 5 segundos entre cada download
+                    setTimeout(gerarEDownloadArquivo, 2000);  // Intervalo de 2 segundos entre os downloads
 
-                    currentLine += linesForThisInterval; // Atualiza a linha inicial para o próximo intervalo
-                    currentFile++; // Passa para o próximo arquivo
-                } else if (currentLine < dataLines.length) {
-                    // Gera um arquivo adicional com as linhas restantes
-                    const csvChunk = [header].concat(dataLines.slice(currentLine)).join("\n");
-                    downloadCSV(csvChunk, `${fileName}_part${currentFile + 1}.csv`);
-                    document.getElementById('progress').innerHTML = `Baixando arquivo ${currentFile + 1} (restante).`;
+                    linhaAtual += linhasIntervalo;  // Atualiza a linha inicial para o próximo intervalo
+                    arquivoAtual++;  // Passa para o próximo arquivo
+                } else if (linhaAtual < dadosLinhas.length) {
+                    // Caso haja linhas restantes, gera um arquivo adicional
+                    const parteCSV = [cabecalho].concat(dadosLinhas.slice(linhaAtual)).join("\n");
+                    baixarCSV(parteCSV, `${nomeArquivoBase}_parte${arquivoAtual + 1}.csv`);
+                    document.getElementById('progress').innerHTML = `Baixando arquivo ${arquivoAtual + 1} (restante).`;
 
                     document.getElementById('progress').innerHTML = `Processo concluído! Todos os arquivos foram baixados.`;
                 } else {
@@ -209,62 +479,71 @@
                 }
             }
 
-            generateAndDownloadFile();
+            gerarEDownloadArquivo();  // Inicia a geração e download dos arquivos
         }
 
-        function splitCSV(csvContent, intervals, maxLines) {
-            const lines = csvContent.split("\n").filter(line => line.trim() !== "");
-            const header = lines[0]; // Primeira linha do CSV
-            const dataLines = lines.slice(1); // Todas as outras linhas
+        // Função para dividir o CSV com base em um número de intervalos ou linhas máximas
+        function dividirCSV(conteudoCSV, numeroIntervalos, maximoLinhas) {
+            const linhas = conteudoCSV.split("\n").filter(linha => linha.trim() !== "");
+            const cabecalho = linhas[0];  // Primeira linha do CSV (cabeçalho)
+            const dadosLinhas = linhas.slice(1);  // Todas as outras linhas (dados)
 
-            let linesPerInterval;
-            let actualIntervals;
+            let linhasPorIntervalo;
+            let intervalosCalculados;
 
-            if (!isNaN(maxLines) && maxLines > 0) {
-                linesPerInterval = maxLines;
-                actualIntervals = Math.ceil(dataLines.length / maxLines);
-            } else if (!isNaN(intervals) && intervals > 0) {
-                actualIntervals = intervals;
-                linesPerInterval = Math.ceil(dataLines.length / intervals);
+            // Define as variáveis dependendo do número de intervalos ou linhas máximas
+            if (!isNaN(maximoLinhas) && maximoLinhas > 0) {
+                linhasPorIntervalo = maximoLinhas;
+                intervalosCalculados = Math.ceil(dadosLinhas.length / maximoLinhas);
+            } else if (!isNaN(numeroIntervalos) && numeroIntervalos > 0) {
+                intervalosCalculados = numeroIntervalos;
+                linhasPorIntervalo = Math.ceil(dadosLinhas.length / numeroIntervalos);
             }
 
-            let currentFile = 0;
-            let currentLine = 0;
+            let arquivoAtual = 0;
+            let linhaAtual = 0;
 
-            function generateAndDownloadFile() {
-                if (currentFile < actualIntervals) {
-                    const csvChunk = [header].concat(dataLines.slice(currentLine, currentLine + linesPerInterval)).join("\n");
+            // Função recursiva que gera e faz o download de arquivos
+            function gerarEDownloadArquivo() {
+                if (arquivoAtual < intervalosCalculados) {
+                    const parteCSV = [cabecalho].concat(dadosLinhas.slice(linhaAtual, linhaAtual + linhasPorIntervalo)).join("\n");
 
-                    downloadCSV(csvChunk, `${fileName}_part${currentFile + 1}.csv`);
-                    document.getElementById('progress').innerHTML = `Baixando arquivo ${currentFile + 1} de ${actualIntervals}`;
+                    baixarCSV(parteCSV, `${nomeArquivoBase}_parte${arquivoAtual + 1}.csv`);
+                    document.getElementById('progress').innerHTML = `Baixando arquivo ${arquivoAtual + 1} de ${intervalosCalculados}`;
 
-                    setTimeout(generateAndDownloadFile, 5000); // Intervalo de 5 segundos entre cada download
+                    setTimeout(gerarEDownloadArquivo, 2000);  // Intervalo de 2 segundos entre cada download
 
-                    currentLine += linesPerInterval; // Atualiza a linha inicial para o próximo intervalo
-                    currentFile++; // Passa para o próximo arquivo
+                    linhaAtual += linhasPorIntervalo;  // Atualiza a linha inicial para o próximo intervalo
+                    arquivoAtual++;  // Passa para o próximo arquivo
                 } else {
                     document.getElementById('progress').innerHTML = `Processo concluído! Todos os arquivos foram baixados.`;
                 }
             }
 
-            generateAndDownloadFile();
+            gerarEDownloadArquivo();  // Inicia a geração e download dos arquivos
         }
 
-        function downloadCSV(content, fileName) {
-            const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
+        // Função responsável por baixar o arquivo CSV gerado
+        function baixarCSV(conteudo, nomeArquivo) {
+            const blob = new Blob([conteudo], { type: 'text/csv;charset=utf-8;' });  // Cria um Blob com o conteúdo do CSV
+            const link = document.createElement("a");  // Cria um elemento de link (ancora)
 
             if (link.download !== undefined) {
-                const url = URL.createObjectURL(blob);
-                link.setAttribute("href", url);
-                link.setAttribute("download", fileName);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                const url = URL.createObjectURL(blob);  // Cria um URL para o Blob
+                link.setAttribute("href", url);  // Define o href do link para o URL do Blob
+                link.setAttribute("download", nomeArquivo);  // Define o nome do arquivo para download
+                link.style.visibility = 'hidden';  // Esconde o link
+                document.body.appendChild(link);  // Adiciona o link ao documento
+                link.click();  // Simula um clique no link para iniciar o download
+                document.body.removeChild(link);  // Remove o link do documento após o download
             }
         }
+
     </script>
+
+
+
+
 </body>
 
 </html>
